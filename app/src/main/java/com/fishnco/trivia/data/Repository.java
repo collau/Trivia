@@ -1,5 +1,7 @@
 package com.fishnco.trivia.data;
 
+import android.util.Log;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -8,6 +10,7 @@ import com.fishnco.trivia.controller.AppController;
 import com.fishnco.trivia.model.Question;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,25 @@ public class Repository {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                for (int i = 0; i < response.length(); i++)
+                {
+                    try {
+                        JSONArray questionArray = response.getJSONArray(i);
+
+                        // Question question = new Question(questionArray.getString(0), questionArray.getBoolean(1));
+
+                        Question question = new Question();
+                        question.setAnswer(questionArray.getString(0));
+                        question.setAnswerTrue(questionArray.getBoolean(1));
+
+                        questionArrayList.add(question);
+                    } catch (JSONException e)
+                    {
+                        Log.e("Repository", "Exception parsing JSONArray");
+                        e.printStackTrace();
+                    }
+
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -37,9 +59,6 @@ public class Repository {
 
         AppController.getInstance().addToRequestQueue(jsonArrayRequest);
 
-        return null;
+        return questionArrayList;
     }
-
-
-
 }
