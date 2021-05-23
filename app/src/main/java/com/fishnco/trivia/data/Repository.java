@@ -25,7 +25,7 @@ public class Repository {
     ArrayList<Question> questionArrayList = new ArrayList<>();
     String url = "https://raw.githubusercontent.com/curiousily/simple-quiz/master/script/statements-data.json";
 
-    public List<Question> getQuestions() {
+    public List<Question> getQuestions( final AnswerListAsyncResponse callBack) { // Pass a callback class as a parameter
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -46,8 +46,11 @@ public class Repository {
                         Log.e("Repository", "Exception parsing JSONArray");
                         e.printStackTrace();
                     }
-
                 }
+
+                // Ensure that questionArrayList is filled to be passed back to calling class
+                if (null != callBack)
+                    callBack.processFinished(questionArrayList);
 
             }
         }, new Response.ErrorListener() {
