@@ -16,11 +16,12 @@
         <TextView
             android:id="@+id/textView_Title"
             style="@style/textStyleTitle"
+            android:layout_marginStart="16dp"
             android:text="@string/text_title"
             android:textColor="@color/textColor_lightGrey"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.2"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,12 +30,12 @@
             style="@style/textStyleTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="@string/text_questionNo"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
             android:textColor="@android:color/white"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.20"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_Title" />
 
