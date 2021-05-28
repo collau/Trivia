@@ -10,6 +10,7 @@ import com.fishnco.trivia.data.AnswerListAsyncResponse;
 import com.fishnco.trivia.data.Repository;
 import com.fishnco.trivia.databinding.ActivityMainBinding;
 import com.fishnco.trivia.model.Question;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         questionList = new Repository().getQuestions(new AnswerListAsyncResponse() {
             @Override
             public void processFinished(ArrayList<Question> questionArrayList) {
+                binding.textViewQuestionNo.setText(getString(R.string.text_questionNo, currentQuestionIndex+1, questionArrayList.size()));
                 binding.textViewQuestion.setText(questionArrayList.get(currentQuestionIndex).getAnswer());
             }
         });
@@ -56,14 +58,14 @@ public class MainActivity extends AppCompatActivity {
         binding.buttonTrue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                checkAnswer(true);
             }
         });
 
         binding.buttonFalse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                checkAnswer(false);
             }
         });
     }
@@ -71,5 +73,17 @@ public class MainActivity extends AppCompatActivity {
     private void updateQuestion() {
         String question = questionList.get(currentQuestionIndex).getAnswer();
         binding.textViewQuestion.setText(question);
+        binding.textViewQuestionNo.setText(getString(R.string.text_questionNo, currentQuestionIndex+1, questionList.size()));
+    }
+
+    private void checkAnswer(boolean userChoseCorrect) {
+        boolean answer = questionList.get(currentQuestionIndex).isAnswerTrue();
+        int snackMessageId = 0;
+        if (userChoseCorrect == answer) {
+            snackMessageId = R.string.answerCorrect;
+        } else {
+            snackMessageId = R.string.answerWrong;
+        }
+        Snackbar.make(binding.cardViewQuestion, snackMessageId, Snackbar.LENGTH_SHORT).show();
     }
 }
