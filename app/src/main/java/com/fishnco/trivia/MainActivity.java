@@ -3,7 +3,6 @@ package com.fishnco.trivia;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +14,7 @@ import com.fishnco.trivia.data.AnswerListAsyncResponse;
 import com.fishnco.trivia.data.Repository;
 import com.fishnco.trivia.databinding.ActivityMainBinding;
 import com.fishnco.trivia.model.Question;
+import com.fishnco.trivia.util.Prefs;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private int currentQuestionIndex = 0;
     private int currentScore = 0;
     private int highScore = 0;
+    private Prefs prefs;
     List<Question> questionList;
 
     @Override
@@ -49,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
         */
 
         //Get high score from sharedPrefs
-        SharedPreferences getHighScore = getSharedPreferences(SCORE_PREFS, MODE_PRIVATE);
-        highScore = getHighScore.getInt("hiScore", 0);
+        prefs = new Prefs(this);
+        highScore = prefs.getHighestScore();
 
         binding.textViewHiScore.setText(getString(R.string.text_hiScore, highScore));
         binding.textViewCurrent.setText(getString(R.string.text_current, currentScore));
@@ -86,6 +87,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        //Save high score in shared preferences
+        prefs.saveHighestScore(currentScore);
+
+        super.onPause();
+    }
+
     private void updateQuestion() {
         String question = questionList.get(currentQuestionIndex).getAnswer();
         binding.textViewQuestion.setText(question);
@@ -114,14 +123,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentScore > highScore)
         {
+            //Make current score the high score
+            highScore = currentScore;
+
             //Update high score as current score
             binding.textViewHiScore.setText(getString(R.string.text_hiScore, currentScore));
-
-            //Save high score in shared preferences
-            SharedPreferences sharedPreferences = getSharedPreferences(SCORE_PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("hiScore", currentScore);
-            editor.apply();
         }
 
         //Update current score
