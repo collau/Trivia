@@ -3,6 +3,7 @@ package com.fishnco.trivia;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -21,9 +22,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String SCORE_PREFS = "score_prefs";
+
     String url = "https://raw.githubusercontent.com/curiousily/simple-quiz/master/script/statements-data.json";
     private ActivityMainBinding binding;
     private int currentQuestionIndex = 0;
+    private int currentScore = 0;
+    private int highScore = 0;
     List<Question> questionList;
 
     @Override
@@ -42,6 +47,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         */
+
+        //Get high score from sharedPrefs
+        SharedPreferences getHighScore = getSharedPreferences(SCORE_PREFS, MODE_PRIVATE);
+        highScore = getHighScore.getInt("hiScore", 0);
+
+        binding.textViewHiScore.setText(getString(R.string.text_hiScore, highScore));
+        binding.textViewCurrent.setText(getString(R.string.text_current, currentScore));
 
         questionList = new Repository().getQuestions(new AnswerListAsyncResponse() {
             @Override
@@ -82,15 +94,39 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkAnswer(boolean userChoseCorrect) {
         boolean answer = questionList.get(currentQuestionIndex).isAnswerTrue();
-        int snackMessageId = 0;
+        int snackMessageId;
         if (userChoseCorrect == answer) {
             snackMessageId = R.string.answerCorrect;
+            currentScore++;
+            updateScores();
             fadeAnimation();
         } else {
             snackMessageId = R.string.answerWrong;
+            currentScore--;
+            currentScore = Math.max(currentScore, 0);
+            updateScores();
             shakeAnimation();
         }
         Snackbar.make(binding.cardViewQuestion, snackMessageId, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void updateScores() {
+
+        if (currentScore > highScore)
+        {
+            //Update high score as current score
+            binding.textViewHiScore.setText(getString(R.string.text_hiScore, currentScore));
+
+            //Save high score in shared preferences
+            SharedPreferences sharedPreferences = getSharedPreferences(SCORE_PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("hiScore", currentScore);
+            editor.apply();
+        }
+
+        //Update current score
+        binding.textViewCurrent.setText(getString(R.string.text_current, currentScore));
+
     }
 
     private void shakeAnimation() {
@@ -107,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 binding.textViewQuestion.setTextColor(Color.WHITE);
+                //Activate next question after answer feedback
+                binding.buttonNext.performClick();
             }
 
             @Override
@@ -133,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 binding.textViewQuestion.setTextColor(Color.WHITE);
+                //Activate next question after answer feedback
+                binding.buttonNext.performClick();
             }
 
             @Override

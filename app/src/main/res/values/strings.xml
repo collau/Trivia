@@ -7,4 +7,6 @@
     <string name="button_next">Next</string>
     <string name="answerCorrect">Correct!</string>
     <string name="answerWrong">Oops!</string>
+    <string name="text_hiScore">High: %d</string>
+    <string name="text_current">Current: %d</string>
 </resources>

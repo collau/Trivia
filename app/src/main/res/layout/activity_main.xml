@@ -39,6 +39,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_Title" />
 
+        <TextView
+            android:id="@+id/textView_HiScore"
+            style="@style/textStyleTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/text_hiScore"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textView_Title"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView_Current"
+            style="@style/textStyleTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/text_current"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textView_questionNo"
+            app:layout_constraintTop_toBottomOf="@+id/textView_HiScore" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView_Question"
             android:layout_width="match_parent"
