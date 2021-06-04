@@ -52,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
         //Get high score from sharedPrefs
         prefs = new Prefs(this);
         highScore = prefs.getHighestScore();
+        try {
+            currentQuestionIndex = prefs.getState().get("trivia_state");
+            currentScore = prefs.getState().get("currentScore");
+        } catch (NullPointerException e)
+        {
+            currentQuestionIndex = 0;
+            currentScore = 0;
+        }
 
         binding.textViewHiScore.setText(getString(R.string.text_hiScore, highScore));
         binding.textViewCurrent.setText(getString(R.string.text_current, currentScore));
@@ -90,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         //Save high score in shared preferences
-        prefs.saveHighestScore(currentScore);
+        prefs.saveHighestScore(highScore);
+        prefs.setState(currentQuestionIndex, currentScore);
 
         super.onPause();
     }
